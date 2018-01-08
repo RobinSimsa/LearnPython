@@ -1,0 +1,91 @@
+from Tkinter import *
+import tkMessageBox
+
+##Generates GUI frame and allows users to add more input boxes
+
+def addBox():
+    print "ADD"
+
+    frame = Frame(root)
+    frame.pack()
+
+    Label(frame, text='Sample name').grid(row=0, column=0)
+
+    ent1 = Entry(frame)
+    ent1.grid(row=1, column=0)
+
+    Label(frame, text='1. Measurement [ng/uL]').grid(row=0, column=1)
+
+    ent2 = Entry(frame)
+    ent2.grid(row=1, column=1)
+
+    Label(frame, text='2. Measurement [ng/uL]').grid(row=0, column=2)
+
+    ent3 = Entry(frame)
+    ent3.grid(row=1, column=2)
+
+    Label (frame, text="mg Tissue").grid(row=0, column=3)
+
+    ent4 = Entry(frame)
+    ent4.grid(row=1, column=3)
+
+    Label(frame, text="DNA content [ng/uL]").grid(row=0, column=4)
+    averageDNA = Entry (frame, state=DISABLED)
+    averageDNA.grid(row=1, column=4)
+
+    Label(frame, text="DNA/mg Tissue [ng]").grid(row=0, column=5)
+    DNA_tissue = Entry (frame, state=DISABLED)
+    DNA_tissue.grid(row=1, column=5)
+
+    all_entries.append( (ent1, ent2, ent3, ent4, averageDNA, DNA_tissue) )
+
+    
+##Calculations and adding of values to GUI
+    
+def calculate_average():
+    for number, (ent1,ent2, ent3,ent4, averageDNA, DNA_tissue) in enumerate(all_entries):
+        measurement1 = float(ent2.get())
+        measurement2 = float(ent3.get())
+        mg_tissue_start = float(ent4.get())
+        average = (measurement1 + measurement2)/2
+        total_DNA = 200 * average
+        DNA_per_mg = total_DNA/mg_tissue_start
+        print "The average is",average, "[ng/uL]"
+        print "The total DNA is", DNA_per_mg, " [ng/mg tissue], calculated from dilution factor 1/200"
+        
+        averageDNA.configure(state=NORMAL) #Add value of average DNA  
+        averageDNA.delete(0,"end")
+        averageDNA.insert(0, average)
+        averageDNA.configure(state=DISABLED)
+
+        DNA_tissue.configure(state=NORMAL) #Add value of DNA/mg tissue to 
+        DNA_tissue.delete(0,"end")
+        DNA_tissue.insert(0, DNA_per_mg)
+        DNA_tissue.configure(state=DISABLED)
+       
+#Prints results in python program
+
+def showEntries():
+
+    for number, (ent1, ent2, ent3, ent4) in enumerate(all_entries):
+        print number, ent1.get(), ent2.get(), ent3.get(), ent4.get()
+
+all_entries = []
+
+print all_entries
+
+root = Tk()
+
+# Buttons
+
+showButton = Button(root, text='Show Input', command=showEntries)
+showButton.pack()
+
+addboxButton = Button(root, text='Add measurement', fg="Blue", command=addBox)
+addboxButton.pack()
+
+calculate_averageButton= Button(root, text="Calculate", command = calculate_average)
+calculate_averageButton.pack()
+
+root.mainloop()
+
